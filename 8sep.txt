@@ -1,0 +1,23 @@
+Admin12
+gee1234
+
+
+RDS name
+sonarqube ----rds name 
+aadmin	----user
+add12345	---pass
+
+
+stage('Build Docker Imager'){
+   sh 'docker build -t cloudgee/myweb:0.0.2 .'
+   }
+   stage('Docker Image Push'){
+   withCredentials([string(credentialsId: 'dockerPass', variable: 'dockerPassword')]) {
+   sh "docker login -u cloudgee -p ${dockerPassword}"
+    }
+   sh 'docker push cloudgee/myweb:0.0.2'
+   }
+   stage('Docker deployment'){
+   sh 'docker run -d -p 8090:8080 --name tomcattest cloudgee/myweb:0.0.2' 
+   }
+}
